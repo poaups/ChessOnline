@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour {
 
 	public GameObject target;
 	public GameObject PlayerPrefab;
-	public GameObject ToadPrefab;
+	public Gameplay gameplay;
 	private Connection pioconnection;
 	private List<Message> msgList = new List<Message>(); //  Messsage queue implementation
 	private bool joinedroom = false;
@@ -98,16 +98,25 @@ public class GameManager : MonoBehaviour {
 		msgList.Add(m);
 	}
 
+	int totalOfPlayer = 1;
+
 	void FixedUpdate() {
 		// process message queue
 		foreach (Message m in msgList) {
 			switch (m.Type) {
 				case "PlayerJoined":
+
 					GameObject newplayer = GameObject.Instantiate(target) as GameObject;
 					newplayer.transform.position = new Vector3(m.GetFloat(1), 0, m.GetFloat(2));
 					newplayer.name = m.GetString(0);
 					newplayer.transform.Find("NameTag").GetComponent<TextMesh>().text = m.GetString(0);
-					break;
+					newplayer.GetComponentInChildren<DataPlayer>().indexOfPlayer = totalOfPlayer;
+					totalOfPlayer++;
+					gameplay.CanPlay(totalOfPlayer);
+
+					print("un joueur a join");
+
+                    break;
 				case "Move":
 					GameObject upplayer = GameObject.Find(m.GetString(0));
 					upplayer.transform.LookAt(new Vector3(m.GetFloat(1), 0, m.GetFloat(2)));
@@ -120,26 +129,6 @@ public class GameManager : MonoBehaviour {
 					float dist = Vector3.Distance(upplayer.transform.position, new Vector3(m.GetFloat(1), 0, m.GetFloat(2)));
 					// create a tween between current and target position
 				//	iTween.MoveTo(upplayer, iTween.Hash("x", m.GetFloat(1), "z", m.GetFloat(2), "onstart", "startwalk", "oncomplete", "stopwalk", "time", dist, "delay", 0, "easetype", iTween.EaseType.linear));
-					break;
-
-				case "Harvest":
-					GameObject hvplayer = GameObject.Find(m.GetString(0));
-					hvplayer.transform.LookAt(new Vector3(m.GetFloat(1), .5f, m.GetFloat(2)));
-
-					// set transform x axis to 0, so the character will be facing forward
-					hvplayer.transform.eulerAngles = new Vector3(0, hvplayer.transform.eulerAngles.y, hvplayer.transform.eulerAngles.z);
-
-					// get distance between current position and target position,
-					// we'll need to value to know how much the tween will last
-					float distance = Vector3.Distance(hvplayer.transform.position, new Vector3(m.GetFloat(1), 0, m.GetFloat(2)));
-					// create a tween between current and target position
-				//	iTween.MoveTo(hvplayer, iTween.Hash("x", m.GetFloat(1), "z", m.GetFloat(2), "onstart", "startwalk", "oncomplete", "stopharvest", "time", distance, "delay", 0, "easetype", iTween.EaseType.linear));
-					break;
-				case "Picked":
-					// remove the object when it's picked up
-					GameObject removetoad = GameObject.Find("Toad" + m.GetInt(0));
-					Destroy(removetoad);
-
 					break;
 				case "Chat":
 					if (m.GetString(0) != "Server") {
@@ -154,16 +143,6 @@ public class GameManager : MonoBehaviour {
 					// remove characters from the scene when they leave
 					GameObject playerd = GameObject.Find(m.GetString(0));
 					Destroy(playerd);
-					break;
-				case "Toad":
-					// adds a toadstool to the scene
-					GameObject newtoad = GameObject.Instantiate(ToadPrefab) as GameObject;
-					newtoad.transform.position = new Vector3(m.GetFloat(1), 0.1f, m.GetFloat(2));
-					newtoad.name = "Toad" + m.GetInt(0);
-					break;
-				case "ToadCount":
-					// updates how many toads have been picked up by the player
-					toadspicked = m.GetInt(0);
 					break;
 			}
 		}
@@ -184,6 +163,7 @@ public class GameManager : MonoBehaviour {
 		Vector3 targetPosition = new Vector3(0, 0, 0);
 
 		var playerPlane = new Plane(Vector3.up, target.transform.position);
+
 		var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		var hitdist = 0.0f;
 		if (playerPlane.Raycast(ray, out hitdist)) {
