@@ -13,7 +13,6 @@ public class InputPlayer : MonoBehaviour
     {
         if(Input.GetMouseButtonDown(0))
         {
-            print("ici");
         }
     }
 }

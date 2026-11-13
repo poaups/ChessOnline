@@ -23,6 +23,7 @@ public class ChatEntry {
 public class GameManager : MonoBehaviour {
 
 	public GameObject target;
+	public Ready ready;
 	public GameObject PlayerPrefab;
 	public Gameplay gameplay;
 	private Connection pioconnection;
@@ -144,6 +145,15 @@ public class GameManager : MonoBehaviour {
 					GameObject playerd = GameObject.Find(m.GetString(0));
 					Destroy(playerd);
 					break;
+
+				case "BReady":
+                    print("BREADY CASE");
+                    ready.SetColorByIndex(m.GetInt(0));
+					break;
+
+
+					
+
 			}
 		}
 
@@ -187,6 +197,12 @@ public class GameManager : MonoBehaviour {
 
 	public void TryPickup(string id) {
 		pioconnection.Send("Pickup", id);
+	}
+
+	public void ButtonColor(int index)
+	{
+		print("Send to server");
+		pioconnection.Send("BReady", index);
 	}
 
 	void GlobalChatWindow(int id) {

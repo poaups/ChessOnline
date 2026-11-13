@@ -8,15 +8,15 @@ public class Gameplay : MonoBehaviour
 
     public void CanPlay(int totalPlayer)
     {
-        print(totalPlayer);
+        //print(totalPlayer);
 
-        if(totalPlayer == 2)
-        {
-            print("Peut commencer a jouer");
-        }
-        else
-        {
-            print("il manque un joueur");
-        }
+        //if(totalPlayer == 2)
+        //{
+        //    print("Peut commencer a jouer");
+        //}
+        //else
+        //{
+        //    print("il manque un joueur");
+        //}
     }
 }
