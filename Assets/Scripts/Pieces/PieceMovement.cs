@@ -4,6 +4,8 @@ public class PieceMovement : MonoBehaviour
 {
     [SerializeField] private float offset;
     [SerializeField] private float power;
+
+    private GameManager gm;
     public IEnumerator UpMovement()
     {
         Vector3 finalPos = new Vector3(transform.position.x, transform.position.y + offset, transform.position.z);

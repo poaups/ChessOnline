@@ -7,14 +7,15 @@ public class Ready : MonoBehaviour
 {
 	[SerializeField] private List<GameObject> allButtons = new List<GameObject>();
 	[SerializeField] private TextMeshProUGUI txt;
-    [SerializeField] private UIOnline uiOnline;
+    //[SerializeField] private UIOnline uiOnline;
+    [SerializeField] private GameManager gm;
 
     int playerReady = 0;
 
     public void ButtonReady(int indexButton)
     {
         Debug.Log("ButtonReady");
-        uiOnline.ButtonColor(indexButton);
+        gm.ButtonColor(indexButton);
     }
 
     void UpdatePlayerReady()

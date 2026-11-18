@@ -22,13 +22,13 @@ public class ChatEntry {
 
 public class GameManager : MonoBehaviour 
 {
-	public static GameManager insntace;
 	public GameObject target;
 	public GameObject PlayerPrefab;
 	public Gameplay gameplay;
-	[HideInInspector] public Connection pioconnection;
+	private Connection pioconnection;
 	private List<Message> msgList = new List<Message>(); //  Messsage queue implementation
 	private bool joinedroom = false;
+	//[SerializeField] private UIOnline uiOnline;
 
 	// UI stuff
 	private Vector2 scrollPosition;
@@ -37,11 +37,9 @@ public class GameManager : MonoBehaviour
 	private Rect window = new Rect(10, 10, 300, 150);
 	private int toadspicked = 0;
 	private string infomsg = "";
+	public Ready ready;
+	public PieceManager pieceManager;
 
-    private void Awake()
-    {
-		insntace = this;
-    }
 
     void Start() {
 		Application.runInBackground = true;
@@ -98,6 +96,8 @@ public class GameManager : MonoBehaviour
 			}
 		);
 
+		//uiOnline.LocalStart();
+
 	}
 
 	void handlemessage(object sender, Message m) {
@@ -150,13 +150,31 @@ public class GameManager : MonoBehaviour
 					GameObject playerd = GameObject.Find(m.GetString(0));
 					Destroy(playerd);
 					break;
+
+				case "BReady":
+					print("BREADY CASE");
+					ready.SetColorByIndex(m.GetInt(0));
+					break;
+				case "Movement":
+					//pieceManager.UpdatePosition();
+					print("Movement");
+					break;
+
 			}
 		}
 
 		// clear message queue after it's been processed
 		msgList.Clear();
 	}
+	public void UpdatePosition(GameObject obj, Vector3 position)
+	{
+		pioconnection.Send("Movement", obj, position);
+	}
 
+	public void ButtonColor(int index)
+	{
+		pioconnection.Send("BReady", index);
+	}
 	void OnMouseDown() {
 		// this function responds to mouse clicks on the ground
 		// it will send a move request to the server

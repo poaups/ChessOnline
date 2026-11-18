@@ -11,4 +11,10 @@ public class PieceManager : MonoBehaviour
             manager.LocalStart();
         }
     }
+
+    public void UpdatePosition(GameObject obj, Vector3 position)
+    {
+        obj.transform.position = position;
+    }
+
 }
