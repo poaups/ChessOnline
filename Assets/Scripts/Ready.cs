@@ -5,19 +5,16 @@ using UnityEngine.UI;
 
 public class Ready : MonoBehaviour
 {
-    public List<GameObject> allButtons = new List<GameObject>();
-
-    public TextMeshProUGUI txt;
-    public GameManager gm;
+	[SerializeField] private List<GameObject> allButtons = new List<GameObject>();
+	[SerializeField] private TextMeshProUGUI txt;
+    [SerializeField] private UIOnline uiOnline;
 
     int playerReady = 0;
-
-
 
     public void ButtonReady(int indexButton)
     {
         Debug.Log("ButtonReady");
-        gm.ButtonColor(indexButton);
+        uiOnline.ButtonColor(indexButton);
     }
 
     void UpdatePlayerReady()

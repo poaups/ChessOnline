@@ -20,13 +20,13 @@ public class ChatEntry {
 	public bool mine = true;
 }
 
-public class GameManager : MonoBehaviour {
-
+public class GameManager : MonoBehaviour 
+{
+	public static GameManager insntace;
 	public GameObject target;
-	public Ready ready;
 	public GameObject PlayerPrefab;
 	public Gameplay gameplay;
-	private Connection pioconnection;
+	[HideInInspector] public Connection pioconnection;
 	private List<Message> msgList = new List<Message>(); //  Messsage queue implementation
 	private bool joinedroom = false;
 
@@ -38,7 +38,12 @@ public class GameManager : MonoBehaviour {
 	private int toadspicked = 0;
 	private string infomsg = "";
 
-	void Start() {
+    private void Awake()
+    {
+		insntace = this;
+    }
+
+    void Start() {
 		Application.runInBackground = true;
 
 		// Create a random userid 
@@ -145,15 +150,6 @@ public class GameManager : MonoBehaviour {
 					GameObject playerd = GameObject.Find(m.GetString(0));
 					Destroy(playerd);
 					break;
-
-				case "BReady":
-                    print("BREADY CASE");
-                    ready.SetColorByIndex(m.GetInt(0));
-					break;
-
-
-					
-
 			}
 		}
 
@@ -199,11 +195,6 @@ public class GameManager : MonoBehaviour {
 		pioconnection.Send("Pickup", id);
 	}
 
-	public void ButtonColor(int index)
-	{
-		print("Send to server");
-		pioconnection.Send("BReady", index);
-	}
 
 	void GlobalChatWindow(int id) {
 
