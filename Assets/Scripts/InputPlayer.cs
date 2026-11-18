@@ -1,7 +1,9 @@
 using UnityEngine;
-
+using System.Collections.Generic;
 public class InputPlayer : MonoBehaviour
 {
+    private LocalManagerPiece previousPiecesSelected;
+
     void Update()
     {
         if(Input.GetMouseButtonDown(0))
@@ -14,8 +16,20 @@ public class InputPlayer : MonoBehaviour
                 if (dataPiece != null)
                 {
                     dataPiece.OnSelect();
+                    ResetPieceSelected();
+
+                    previousPiecesSelected = dataPiece;
                 }
             }
+        }
+    }
+
+
+    void ResetPieceSelected()
+    {
+        if(previousPiecesSelected != null)
+        {
+            previousPiecesSelected.UnSelect();
         }
     }
 }
